@@ -2,24 +2,35 @@
 window.onload = () => {
 
   Webcam.set({
+    
+    // screen width
     width: 1024,
     height: 768,
+    
+    // device capture size
+    width: 1024,
+    height: 768,
+    
+    // about image
     image_format: 'jpeg',
     jpeg_quality: 90
+    
   });
 
   Webcam.attach('#barcode-camera');
 
-  // document.getElementById('barcode-button').addEventListener('click', () => {
-  // 
-  //   take_snapshot();
-  // 
-  // });
+  document.getElementById('barcode-button').addEventListener('click', () => {
+
+    take_snapshot();
+
+  });
 
 };
 
 function take_snapshot() {
-
+  
+  Webcam.freeze();
+  
   Webcam.snap((data_uri) => {
 
     fetch('/send-barcode', {

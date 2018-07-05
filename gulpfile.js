@@ -29,7 +29,7 @@ gulp.task('browser-sync', ['nodemon'], () => {
 
     proxy: "http://localhost:5000",
     port: 7000,
-    open: false,
+    open: true,
     sync: false
 
   });

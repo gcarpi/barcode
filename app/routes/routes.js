@@ -26,7 +26,7 @@ module.exports = (app, base64Img, fs, cryptoRandomString) => {
       else {
 
         let exec = require('child_process').exec;
-        console.log(filepath);
+
         let child = exec(`java -jar zxing.jar ${filepath}`, (error, stdout, stderr) => {
 
             if (error !== null) {
@@ -50,11 +50,11 @@ module.exports = (app, base64Img, fs, cryptoRandomString) => {
 
             }
 
-            fs.unlink(path + '/' + barcodeImageName + '.jpg', (err) => {
-            
-              err ? console.error(`Error: Delete image ${err}`) : console.log('File has been Deleted');
-            
-            });
+            // fs.unlink(path + '/' + barcodeImageName + '.jpg', (err) => {
+            // 
+            //   err ? console.error(`Error: ${err}`) : console.log('File has been Deleted');
+            // 
+            // });
 
           }
 
