@@ -14,20 +14,25 @@ window.onload = () => {
 
 function take_snapshot() {
 
+  let $input = document.getElementById('result');
+
   Webcam.snap((data_uri) => {
-    
-    console.log(data_uri);
 
     fetch('/send-barcode', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({img: data_uri})
-    });
-    
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          img: data_uri
+        })
+      })
+      .then(response => response.json())
+      .then(data => $input.value = data.barcode);
+
   });
 
 }
+
 },{}]},{},[1])

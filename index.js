@@ -1,16 +1,11 @@
 var express = require('express'),
-    FormData = require('form-data'),
-    queryString = require('query-string'),
-    multipart 	= require('connect-multiparty'),
     expressLayouts = require('express-ejs-layouts'),
     cookieParse = require('cookie-parser'),
     bodyParser = require('body-parser'),
     session = require('express-session'),
-    helmet = require('helmet'),
-    dotenv = require('dotenv').config(),
     axios  = require('axios'),
     path   = require('path'),
-    base64ToImage = require('base64-to-image');
+    base64Img = require('base64-img');
 
 var app = express();
 
@@ -21,9 +16,6 @@ app.use('*/fonts', express.static('public/dist/fonts'));
 app.use('*/files', express.static('public/src/files'));
 app.use('*/img',  express.static('public/src/img'));
 app.use('*/js', express.static('public/src/js'));
-
-app.use(helmet.noCache());
-app.use(helmet.frameguard());
 
 app.use(expressLayouts);
 app.use(cookieParse());
@@ -44,6 +36,6 @@ app.use(session({
 
 }));
 
-require('./app/routes/routes.js')(app, queryString, axios, multipart, FormData, base64ToImage);
+require('./app/routes/routes.js')(app, base64Img);
 
 app.listen(5000);

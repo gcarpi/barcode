@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function(app, queryString, render, sender, axios, multipart, FormData, base64ToImage) {
+module.exports = function(app, base64Img) {
 
   app.get('/barcode', (req, res) => {
 
@@ -14,45 +14,42 @@ module.exports = function(app, queryString, render, sender, axios, multipart, Fo
 
   app.post('/send-barcode', (req, res) => {
 
-    var base64Str = req.body.img;
-    
-    var path = 'public/src/img';
-    
-    var optionalObj = {
-      'fileName': 'barcode',
-      'type': 'jpeg'
-    };
-    
-    base64ToImage(base64Str, path, optionalObj);
-    
-    fs.writeFile(path, new Buffer(base64Str, "base64"), function(err) {
-    
-      if (err) console.log('Error:' + err);
-    
+    base64Img.img(req.body.img, './public/src/img', 'temp-barcode-img', function(err, filepath) {
+
+      if (err) console.log(err);
+
       else {
-    
-        console.log('The file has been saved!');
-    
+
+        let exec = require('child_process').exec;
+
+        let child = exec(`java -jar zxing.jar public/src/img/teste.jpg`,
+
+          function(error, stdout, stderr) {
+
+            if (error !== null) {
+
+              console.log("Error -> " + error);
+
+            } else {
+
+              let result = stdout
+                .substring(stdout.indexOf("Raw result:"), stdout.indexOf("Parsed result:"))
+                .split(':')[1]
+                .replace(/\n/g, '');
+
+              res.send(JSON.stringify({
+                barcode: result
+              }));
+
+            }
+
+          }
+
+        );
+
       }
-    
+
     });
-    
-    
-    // var exec = require('child_process').exec;
-    // 
-    // var child = exec(`java -jar ./zxing.jar ${req.params.img}`,
-    // 
-    //   function(error, stdout, stderr) {
-    // 
-    //     console.log('Output -> ' + stdout);
-    // 
-    //     if (error !== null) {
-    // 
-    //       console.log("Error -> " + error);
-    // 
-    //     }
-    // 
-    //   });
 
   });
 
