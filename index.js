@@ -7,6 +7,7 @@ var express = require('express'),
     path   = require('path'),
     fs = require('fs'),
     cryptoRandomString = require('crypto-random-string'),
+    jimp = require("jimp"),
     base64Img = require('base64-img');
 
 var app = express();
@@ -38,6 +39,6 @@ app.use(session({
 
 }));
 
-require('./app/routes/routes.js')(app, base64Img, fs, cryptoRandomString);
+require('./app/routes/routes.js')(app, base64Img, fs, cryptoRandomString, jimp);
 
 app.listen(5000);

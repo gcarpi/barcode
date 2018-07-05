@@ -19,6 +19,7 @@
     "express-ejs-layouts": "^2.4.0",
     "express-session": "^1.15.6",
     "gulp-uglify": "^3.0.0",
+    "jimp": "^0.2.28",
     "node-notifier": "^5.2.1"
   },
   "devDependencies": {

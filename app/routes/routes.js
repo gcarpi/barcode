@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = (app, base64Img, fs, cryptoRandomString) => {
+module.exports = (app, base64Img, fs, cryptoRandomString, jimp) => {
 
   app.get('/barcode', (req, res) => {
 
@@ -25,40 +25,49 @@ module.exports = (app, base64Img, fs, cryptoRandomString) => {
 
       else {
 
-        let exec = require('child_process').exec;
+        jimp.read(path + '/' + barcodeImageName + '.jpg')
+          .then(resp => resp.crop(0, 234, 1024, 300).write(path + '/' + barcodeImageName + '.jpg'))
+          .then(() => {
 
-        let child = exec(`java -jar zxing.jar ${filepath}`, (error, stdout, stderr) => {
+            let exec = require('child_process').exec;
 
-            if (error !== null) {
+            let child = exec(`java -jar zxing.jar ${filepath}`, (error, stdout, stderr) => {
 
-              console.log("Error:  " + error);
+                if (error !== null) {
 
-            } else {
+                  console.log("Error:  " + error);
 
-              console.log(stdout);
+                } else {
 
-              // let result = stdout
-              //   .substring(stdout.indexOf("Raw result:"), stdout.indexOf("Parsed result:"))
-              //   .split(':')[1]
-              //   .replace(/\n/g, '');
-              // 
-              // res.send(JSON.stringify({
-              // 
-              //   barcode: result
-              // 
-              // }));
+                  console.log(stdout);
 
-            }
+                  // let result = stdout
+                  //   .substring(stdout.indexOf("Raw result:"), stdout.indexOf("Parsed result:"))
+                  //   .split(':')[1]
+                  //   .replace(/\n/g, '');
+                  // 
+                  // res.send(JSON.stringify({
+                  // 
+                  //   barcode: result
+                  // 
+                  // }));
 
-            // fs.unlink(path + '/' + barcodeImageName + '.jpg', (err) => {
-            // 
-            //   err ? console.error(`Error: ${err}`) : console.log('File has been Deleted');
-            // 
-            // });
+                }
 
-          }
+                // fs.unlink(path + '/' + barcodeImageName + '.jpg', (err) => {
+                // 
+                //   err ? console.error(`Error: ${err}`) : console.log('File has been Deleted');
+                // 
+                // });
 
-        );
+              }
+
+            );
+
+          })
+          .catch(err => {
+            console.error(err)
+          });
 
       }
 
