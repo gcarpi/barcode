@@ -29,18 +29,19 @@ gulp.task('browser-sync', ['nodemon'], () => {
 
     proxy: "http://localhost:5000",
     port: 7000,
-    open: false
+    open: false,
+    sync: false
 
   });
 });
 
 gulp.task('sass', () => {
 
-   var styles = gulp.src('public/static/scss/app.scss')
+   var styles = gulp.src('public/src/scss/app.scss')
                    .pipe(sass().on('error', sass.logError))
                    .pipe(concat('style.min.css'))
                    .pipe(minify())
-                   .pipe(gulp.dest('public/static/dist/css'));
+                   .pipe(gulp.dest('public/dist/css'));
 
    return es.concat(styles);
 });

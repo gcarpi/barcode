@@ -10,27 +10,31 @@
 		<%= title %>
 	</title>
 
+	<link rel="stylesheet" href="/dist/css/style.min.css">
+
 </head>
 
 <body>
 
-	<section style="width:320px; display: inline-block; float: left">
+	<section id="barcode-container">
 
-		<div id="my_camera"></div>
+		<div class="barcode-content">
 
-		<form style="margin-top: 40px;">
-
-			<input type=button value="Take Snapshot" onClick="take_snapshot()" style="display: inline-block; float: left; width: 320px; margin-bottom: 40px;">
-
-			<div class="result" style="display: block; width: 320px; height: 40px; margin-top: 40px;">
-
-				<label for="result">Result</label>
-				<input type="text" name="result" value="" id="result" style="display: inline-block; width: 100%; height: 40px; float: left;">
-
+			<div id="barcode-camera"></div>
+			
+			<div class="barcode-square-container">
+				<div class="barcode-square">
+					
+				</div>
 			</div>
+			<!-- <div class="photo-button" id="barcode-button">
+			  <div class="circle"></div>
+			  <div class="ring"></div>
+			</div> -->
+			
 
-		</form>
-		
+		</div>
+
 	</section>
 
 	<script src="/js/webcam.min.js"></script>

@@ -5,6 +5,8 @@ var express = require('express'),
     session = require('express-session'),
     axios  = require('axios'),
     path   = require('path'),
+    fs = require('fs'),
+    cryptoRandomString = require('crypto-random-string'),
     base64Img = require('base64-img');
 
 var app = express();
@@ -19,8 +21,8 @@ app.use('*/js', express.static('public/src/js'));
 
 app.use(expressLayouts);
 app.use(cookieParse());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json({limit: '50mb', extended: true}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
 app.set('view engine', 'ejs');
 app.set('view cache', false);
@@ -36,6 +38,6 @@ app.use(session({
 
 }));
 
-require('./app/routes/routes.js')(app, base64Img);
+require('./app/routes/routes.js')(app, base64Img, fs, cryptoRandomString);
 
 app.listen(5000);

@@ -1,19 +1,23 @@
 window.onload = () => {
 
   Webcam.set({
-    width: 320,
-    height: 240,
+    width: 1024,
+    height: 768,
     image_format: 'jpeg',
     jpeg_quality: 90
   });
 
-  Webcam.attach('#my_camera');
+  Webcam.attach('#barcode-camera');
+
+  // document.getElementById('barcode-button').addEventListener('click', () => {
+  // 
+  //   take_snapshot();
+  // 
+  // });
 
 };
 
 function take_snapshot() {
-
-  let $input = document.getElementById('result');
 
   Webcam.snap((data_uri) => {
 
@@ -28,7 +32,7 @@ function take_snapshot() {
         })
       })
       .then(response => response.json())
-      .then(data => $input.value = data.barcode);
+      .then(data => alert(data.barcode));
 
   });
 
