@@ -1,11 +1,11 @@
 window.onload = () => {
-
+  
   Webcam.set({
     
     // screen width
     width: 1024,
     height: 768,
-    
+
     // device capture size
     width: 1024,
     height: 768,
@@ -19,16 +19,14 @@ window.onload = () => {
   Webcam.attach('#barcode-camera');
 
   document.getElementById('barcode-button').addEventListener('click', () => {
-
+  
     take_snapshot();
-
+  
   });
 
 };
 
 function take_snapshot() {
-  
-  Webcam.freeze();
   
   Webcam.snap((data_uri) => {
 

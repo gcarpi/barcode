@@ -1,14 +1,13 @@
 var express = require('express'),
-    expressLayouts = require('express-ejs-layouts'),
-    cookieParse = require('cookie-parser'),
-    bodyParser = require('body-parser'),
-    session = require('express-session'),
-    axios  = require('axios'),
-    path   = require('path'),
-    fs = require('fs'),
-    cryptoRandomString = require('crypto-random-string'),
-    jimp = require("jimp"),
-    base64Img = require('base64-img');
+  expressLayouts = require('express-ejs-layouts'),
+  cookieParse = require('cookie-parser'),
+  bodyParser = require('body-parser'),
+  session = require('express-session'),
+  axios = require('axios'),
+  path = require('path'),
+  fs = require('fs'),
+  cryptoRandomString = require('crypto-random-string'),
+  jimp = require("jimp");
 
 var app = express();
 
@@ -17,13 +16,19 @@ app.use('*/css', express.static('public/dist/css'));
 app.use('*/dist', express.static('public/dist'));
 app.use('*/fonts', express.static('public/dist/fonts'));
 app.use('*/files', express.static('public/src/files'));
-app.use('*/img',  express.static('public/src/img'));
+app.use('*/img', express.static('public/src/img'));
 app.use('*/js', express.static('public/src/js'));
 
 app.use(expressLayouts);
 app.use(cookieParse());
-app.use(bodyParser.json({limit: '50mb', extended: true}));
-app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
+app.use(bodyParser.json({
+  limit: '50mb',
+  extended: true
+}));
+app.use(bodyParser.urlencoded({
+  limit: '50mb',
+  extended: true
+}));
 
 app.set('view engine', 'ejs');
 app.set('view cache', false);
@@ -39,6 +44,6 @@ app.use(session({
 
 }));
 
-require('./app/routes/routes.js')(app, base64Img, fs, cryptoRandomString, jimp);
+require('./app/routes/routes.js')(app, fs, cryptoRandomString, jimp);
 
 app.listen(5000);

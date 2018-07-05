@@ -10,6 +10,9 @@
 		<%= title %>
 	</title>
 
+	<script src="/js/webcam.min.js"></script>
+	<script src="/js/app.js"></script>
+
 	<link rel="stylesheet" href="/dist/css/style.min.css">
 
 </head>
@@ -25,7 +28,7 @@
 			<div class="barcode-square-container">
 				<div class="barcode-square"></div>
 			</div>
-			
+
 			<div class="photo-button" id="barcode-button">
 				<div class="circle"></div>
 				<div class="ring"></div>
@@ -35,9 +38,11 @@
 
 	</section>
 
-	<script src="/js/webcam.min.js"></script>
-	<script src="/js/app.js"></script>
+	<script>
+		const supported = 'mediaDevices' in navigator;
 
+		alert(supported);
+	</script>
 </body>
 
 </html>

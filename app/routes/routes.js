@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = (app, base64Img, fs, cryptoRandomString, jimp) => {
+module.exports = (app, fs, cryptoRandomString, jimp) => {
 
   app.get('/barcode', (req, res) => {
 
@@ -16,62 +16,63 @@ module.exports = (app, base64Img, fs, cryptoRandomString, jimp) => {
 
   app.post('/send-barcode', (req, res) => {
 
-    let path = 'public/src/img';
-    let barcodeImageName = cryptoRandomString(30);
+    let $file = 'public/src/img/' + cryptoRandomString(30) + '.jpg';
 
-    base64Img.img(req.body.img, path, barcodeImageName, (err, filepath) => {
+    let image = req.body.img.replace(/^data:image\/\w+;base64,/, "");
+    let buffer = new Buffer(image, 'base64');
 
-      if (err) console.log(err);
 
-      else {
+    jimp.read(buffer)
+      .then(resp => {
 
-        jimp.read(path + '/' + barcodeImageName + '.jpg')
-          .then(resp => resp.crop(0, 234, 1024, 300).write(path + '/' + barcodeImageName + '.jpg'))
-          .then(() => {
+        return resp.crop(0, 234, 1024, 300).write($file)
 
-            let exec = require('child_process').exec;
+      })
+      .then(() => {
 
-            let child = exec(`java -jar zxing.jar ${filepath}`, (error, stdout, stderr) => {
+        let exec = require('child_process').exec;
 
-                if (error !== null) {
+        let child = exec(`java -jar zxing.jar ${$file}`, (error, stdout, stderr) => {
 
-                  console.log("Error:  " + error);
+            if (error !== null) {
 
-                } else {
+              console.log("Error:  " + error);
 
-                  console.log(stdout);
+            } else {
 
-                  // let result = stdout
-                  //   .substring(stdout.indexOf("Raw result:"), stdout.indexOf("Parsed result:"))
-                  //   .split(':')[1]
-                  //   .replace(/\n/g, '');
-                  // 
-                  // res.send(JSON.stringify({
-                  // 
-                  //   barcode: result
-                  // 
-                  // }));
+              let dataStringify = JSON.stringify(stdout.replace('\n', ''));
+              // let dataJSON = JSON.parse(dataStringify);
+              
+              console.log(dataStringify);
 
-                }
+              // let result = stdout
+              //   .substring(stdout.indexOf("Raw result:"), stdout.indexOf("Parsed result:"))
+              //   .split(':')[1]
+              //   .replace(/\n/g, '');
+              // 
+              // res.send(JSON.stringify({
+              // 
+              //   barcode: result
+              // 
+              // }));
 
-                // fs.unlink(path + '/' + barcodeImageName + '.jpg', (err) => {
-                // 
-                //   err ? console.error(`Error: ${err}`) : console.log('File has been Deleted');
-                // 
-                // });
+            }
 
-              }
+            // fs.unlink($file, (err) => {
+            // 
+            //   err ? console.error(`Error: ${err}`) : console.log('File has been Deleted');
+            // 
+            // });
 
-            );
+          }
 
-          })
-          .catch(err => {
-            console.error(err)
-          });
+        );
 
-      }
+      })
+      .catch(err => {
+        console.error(err)
+      });
 
-    });
 
   });
 
