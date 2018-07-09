@@ -29,19 +29,42 @@
 				<div class="barcode-square"></div>
 			</div>
 
-			<div class="photo-button" id="barcode-button">
-				<div class="circle"></div>
-				<div class="ring"></div>
-			</div>
-
 		</div>
 
 	</section>
 
-	<script>
-		const supported = 'mediaDevices' in navigator;
+	<section id="barcode-result">
 
-		alert(supported);
+		<input type="text" name="result" value="" id="result">
+
+	</section>
+
+	<script>
+
+		Webcam.set({
+
+			// screen width
+			width: 1024,
+			height: 768,
+
+			// device capture size
+			width: 1024,
+			height: 768,
+
+			// about image
+			image_format: 'jpeg',
+			jpeg_quality: 90
+
+		});
+
+		Webcam.attach('#barcode-camera');
+
+	</script>
+
+	<script>
+		// const supported = 'mediaDevices' in navigator;
+		//
+		// alert(supported);
 	</script>
 </body>
 

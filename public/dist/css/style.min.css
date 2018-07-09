@@ -121,4 +121,11 @@ table {
       #barcode-container .barcode-content .photo-button .ring {
         transition: all 0.25s; }
       #barcode-container .barcode-content .photo-button:hover .circle {
-        opacity: 1; } }
+        opacity: 1; }
+  #barcode-result {
+    display: none; }
+    #barcode-result #result {
+      width: 100%;
+      height: 40px;
+      font-size: 14px;
+      letter-spacing: 2px; } }

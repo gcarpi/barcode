@@ -2,11 +2,12 @@
 
 module.exports = (app, fs, cryptoRandomString, jimp) => {
 
+  // Render the test page
   app.get('/barcode', (req, res) => {
 
     res.render('barcode', {
 
-      title: 'Barcode Test',
+      title: 'Barcode',
       layout: 'barcode',
       template: 'barcode'
 
@@ -14,65 +15,76 @@ module.exports = (app, fs, cryptoRandomString, jimp) => {
 
   });
 
+  // Get the barcode from the API
   app.post('/send-barcode', (req, res) => {
 
+    // Folder and file name
     let $file = 'public/src/img/' + cryptoRandomString(30) + '.jpg';
 
+    // Get the image in base64
     let image = req.body.img.replace(/^data:image\/\w+;base64,/, "");
+
+    // Create a buffer with the image
     let buffer = new Buffer(image, 'base64');
 
+    // Get barcode from API
+    function getBarcode() {
 
-    jimp.read(buffer)
-      .then(resp => {
+      let exec = require('child_process').exec;
 
-        return resp.crop(0, 234, 1024, 300).write($file)
+      let child = exec(`java -jar zxing.jar ${$file}`, (error, stdout, stderr) => {
+          console.log(stdout);
+          let result = stdout.replace(/\n/g, '');
+          let obj = {};
 
-      })
-      .then(() => {
+          if (result.match('result')) {
 
-        let exec = require('child_process').exec;
+            result = stdout
+              .substring(stdout.indexOf("Raw result:"), stdout.indexOf("Parsed result:"))
+              .split(':')[1]
+              .replace(/\n/g, '');
 
-        let child = exec(`java -jar zxing.jar ${$file}`, (error, stdout, stderr) => {
-
-            if (error !== null) {
-
-              console.log("Error:  " + error);
-
-            } else {
-
-              let dataStringify = JSON.stringify(stdout.replace('\n', ''));
-              // let dataJSON = JSON.parse(dataStringify);
-              
-              console.log(dataStringify);
-
-              // let result = stdout
-              //   .substring(stdout.indexOf("Raw result:"), stdout.indexOf("Parsed result:"))
-              //   .split(':')[1]
-              //   .replace(/\n/g, '');
-              // 
-              // res.send(JSON.stringify({
-              // 
-              //   barcode: result
-              // 
-              // }));
-
+            obj = {
+              statusCode: '200',
+              barcode: result
             }
 
-            // fs.unlink($file, (err) => {
-            // 
-            //   err ? console.error(`Error: ${err}`) : console.log('File has been Deleted');
-            // 
-            // });
+            res.send(JSON.stringify(obj));
+
+            destroyImage();
+
+          } else {
+
+            obj = {
+              statusCode: '404'
+            }
+
+            res.send(JSON.stringify(obj));
+
+            destroyImage();
 
           }
 
-        );
+        }
 
-      })
-      .catch(err => {
-        console.error(err)
+      );
+
+    }
+
+    function destroyImage() {
+
+      fs.unlink($file, (err) => {
+
+        err ? console.error(`Error: ${err}`) : console.log('File has been Deleted');
+
       });
 
+    }
+    // Use JIMP to crop the exactly barcode from image
+    jimp.read(buffer)
+      .then(resp => resp.crop(0, 234, 1024, 300).write($file)) // Crop and save the image
+      .then(() => getBarcode()) // Get barcode from API
+      .catch(err => console.error(err));
 
   });
 
